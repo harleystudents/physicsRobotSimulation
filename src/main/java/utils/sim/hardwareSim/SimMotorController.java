@@ -1,7 +1,5 @@
 package utils.sim.hardwareSim;
 
-import utils.sim.mechanisms.ArmMechanism.MechanismState;
-
 /**
  * An interface to represent a motor controller in the simulation.
  */
@@ -34,6 +32,18 @@ public interface SimMotorController {
     boolean isBrakeMode();
 
     /**
+     * Returns the current position of the motor (if applicable).
+     * @return The current position.
+     */
+    double getPosition();
+
+    /**
+     * sets the current position of the motor (if applicable).
+     * @return void
+     */
+    void setPosition(double position);
+
+    /**
      * A factory method for a motor controller that does nothing.
      * @return A new no-op motor controller.
      */
@@ -44,10 +54,19 @@ public interface SimMotorController {
                 // Returns a zero-voltage output by default
                 return new ControllerOutput(0.0, 0.0, false);
             }
+            @Override
+            public void setPosition(double position) {
+                // No-op
+            }
 
             @Override
             public boolean isBrakeMode() {
                 return false;
+            }
+
+            @Override
+            public double getPosition() {
+                return 0.0;
             }
         };
     }

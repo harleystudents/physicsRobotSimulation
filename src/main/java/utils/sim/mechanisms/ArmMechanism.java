@@ -1,14 +1,11 @@
 package utils.sim.mechanisms;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import utils.sim.MechanismState;
 import utils.sim.SimFrameWork;
 import utils.sim.hardwareSim.SimMotorController;
 
 public class ArmMechanism extends SimFrameWork{
-    public static class MechanismState {
-        public double position;
-        public double velocity;
-        public double acceleration;
     private MechanismState state = new MechanismState(0.0, 0.0, 0.0);
     private DCMotor motor;
     private double gearing;
@@ -50,12 +47,17 @@ public class ArmMechanism extends SimFrameWork{
     }
 
     @Override
+    public MechanismState getState() {
+        return this.state;
+    }
+
+    @Override
     public void update(double dt) {
         // For now, assume a fixed 12V supply
         var output = this.controller.run(dt, 12.0);
         
         double motorTorque;
-        double mechanismVelocity = state.velocity() * this.gearing;
+        double mechanismVelocity = state.getVelocity() * this.gearing;
 
         // 2. Calculate motor torque based on the controller output type
         if (output.useCurrent()) {
@@ -67,7 +69,7 @@ public class ArmMechanism extends SimFrameWork{
 
             // If brake mode is on and commanded voltage is near zero, apply strong resistance
             if (this.controller.isBrakeMode() && Math.abs(appliedVoltage) < 1e-2) {
-                this.state.velocity *= 0.1; 
+                this.state.setVelocity(this.state.getVelocity() * 0.1); 
                 appliedVoltage = 0;
             }
             
@@ -76,21 +78,21 @@ public class ArmMechanism extends SimFrameWork{
         
         // 3. Calculate physics
         final double g = 9.8;
-        double gravityTorque = this.centerOfMass * this.weight * g * Math.cos(state.position());
+        double gravityTorque = this.centerOfMass * this.weight * g * Math.cos(state.getPosition());
         double totalTorque = (motorTorque * this.gearing) - gravityTorque;
 
         // 4. Update state via Euler integration
-        this.state.acceleration = totalTorque / this.momentOfInertia;
-        this.state.velocity += this.state.acceleration * dt;
-        this.state.position += this.state.velocity * dt;
+        this.state.setAcceleration(totalTorque / this.momentOfInertia);
+        this.state.setVelocity(this.state.getVelocity() + this.state.getAcceleration() * dt);
+        this.state.setPosition(this.state.getPosition() + this.state.getVelocity() * dt);
 
         // 5. Apply constraints
-        if (this.state.position > this.maxAngle) {
-            this.state.position = this.maxAngle;
-            this.state.velocity = 0;
-        } else if (this.state.position < this.minAngle) {
-            this.state.position = this.minAngle;
-            this.state.velocity = 0;
+        if (this.state.getPosition() > this.maxAngle) {
+            this.state.setPosition(this.maxAngle);
+            this.state.setVelocity(0.0);
+        } else if (this.state.getPosition() < this.minAngle) {
+            this.state.setPosition(this.minAngle);
+            this.state.setVelocity(0.0);
         }
     }
 }

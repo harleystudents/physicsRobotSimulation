@@ -1,7 +1,5 @@
 package utils.sim.hardwareSim;
 
-import utils.sim.mechanisms.ArmMechanism.MechanismState;
-
 /**
  * A simulated DC motor controller that implements the MotorController interface.
  * This class can be controlled via voltage or current.
@@ -16,6 +14,11 @@ public class SimulatedDCMotor implements SimMotorController {
     private ControlMode controlMode = ControlMode.VOLTAGE;
     private double commandedValue = 0.0;
     private boolean brakeMode = false;
+    private double position = 0.0;
+
+    public void setPosition(double position) {
+        this.position = position;
+    }
 
     /**
      * Sets the controller to voltage control mode and sets the voltage.
@@ -24,6 +27,10 @@ public class SimulatedDCMotor implements SimMotorController {
     public void setVoltage(double voltage) {
         this.controlMode = ControlMode.VOLTAGE;
         this.commandedValue = voltage;
+    }
+    @Override
+    public double getPosition() {
+        return position;
     }
 
     /**
