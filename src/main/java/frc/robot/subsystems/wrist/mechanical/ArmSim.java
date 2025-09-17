@@ -1,12 +1,11 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.wrist.mechanical;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import utils.sim.hardwareSim.SimulatedDCMotor;
 import utils.sim.mechanisms.ArmMechanism;
 
-public class Wrist extends SubsystemBase {
+public class ArmSim extends Arm {
     private final SimulatedDCMotor motor;
     private final ArmMechanism arm;
     private final Timer timer = new Timer();
@@ -18,7 +17,7 @@ public class Wrist extends SubsystemBase {
         STOPPED
     }
 
-    public Wrist() {
+    public ArmSim() {
         motor = new SimulatedDCMotor();
         motor.setBrakeMode(true);
         arm = new ArmMechanism(
@@ -34,35 +33,16 @@ public class Wrist extends SubsystemBase {
         timer.start();
     }
 
-    public void runAtVoltage(double voltage) {
+    public void setVoltage(double voltage) {
         motor.setVoltage(voltage);
+    }
+    public double getAngle() {
+        return arm.getState().getPosition();
     }
 
     @Override
     public void periodic() {
-        switch (currentState) {
-            case FORWARD:
-                runAtVoltage(6.0);
-                if (timer.get() > 2.0) {
-                    timer.reset();
-                    currentState = WristState.BACKWARD;
-                }
-                break;
-            case BACKWARD:
-                runAtVoltage(-6.0);
-                if (timer.get() > 2.0) {
-                    timer.reset();
-                    currentState = WristState.STOPPED;
-                }
-                break;
-            case STOPPED:
-                runAtVoltage(0.0);
-                break;
-        }
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        arm.update(0.02);
+        arm.update(timer.get());
+        timer.reset();
     }
 }
