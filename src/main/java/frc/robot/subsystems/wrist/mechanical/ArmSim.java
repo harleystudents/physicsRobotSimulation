@@ -1,5 +1,6 @@
 package frc.robot.subsystems.wrist.mechanical;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
 import utils.sim.hardwareSim.SimulatedDCMotor;
@@ -35,6 +36,7 @@ public class ArmSim extends Arm {
 
     public void setVoltage(double voltage) {
         motor.setVoltage(voltage);
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Voltage", voltage);
     }
     public double getAngle() {
         return arm.getState().getPosition();
@@ -44,5 +46,8 @@ public class ArmSim extends Arm {
     public void periodic() {
         arm.update(timer.get());
         timer.reset();
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Position", arm.getState().getPosition());
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Velocity", arm.getState().getVelocity());
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Acceleration", arm.getState().getAcceleration());
     }
 }

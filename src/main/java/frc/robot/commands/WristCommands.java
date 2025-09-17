@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class WristCommands {
-    public Command occilate(Wrist wrist){
+    public static Command occilate(Wrist wrist){
         return Commands.sequence(
                 Commands.runOnce(()->wrist.setVoltage(5), wrist).withTimeout(Second.of(3)),
                 Commands.waitSeconds(0.5),
