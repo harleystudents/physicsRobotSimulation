@@ -1,5 +1,7 @@
 package utils.sim.hardwareSim;
 
+import dev.doglog.DogLog;
+
 /**
  * A simulated DC motor controller that implements the MotorController interface.
  * This class can be controlled via voltage or current.

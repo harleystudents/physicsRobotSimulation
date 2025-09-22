@@ -1,5 +1,6 @@
 package frc.robot.subsystems.wrist;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -15,9 +16,11 @@ public class WristVisualizer {
     public WristVisualizer(){
         arm.setColor(new Color8Bit(255, 0, 0));
         wristMechanism.setBackgroundColor(new Color8Bit(Color.kBlack));
-        SmartDashboard.putData(wristMechanism);
+        SmartDashboard.putData("WRIST MECHANISM", wristMechanism);
     }
     public void update(double angle){
+        //The angle is in degrees
+        DogLog.log("Robot/Subsystems/Wrist/Visualizer/Updated to angle of: ", angle);
         arm.setAngle(angle);
     }
 

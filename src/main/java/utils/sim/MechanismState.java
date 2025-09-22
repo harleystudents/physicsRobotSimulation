@@ -4,6 +4,12 @@ public class MechanismState {
     private double position;
     private double velocity;
     private double acceleration;
+    /**
+     * Creates a new MechanismState with the given position, velocity, and acceleration.
+     * @param position radians
+     * @param velocity radians per second
+     * @param acceleration radians per second squared
+     */
     public MechanismState(double position, double velocity, double acceleration) {
         this.position = position;
         this.velocity = velocity;

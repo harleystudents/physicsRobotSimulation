@@ -6,5 +6,4 @@ public abstract class Arm extends Component{
     abstract public void setVoltage(double voltage);
     abstract public double getAngle();
     abstract public void periodic();
-    
 }

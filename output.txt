@@ -1,0 +1,75 @@
+> Task :extractReleaseNative UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :downloadDepsPreemptively
+> Task :jar UP-TO-DATE
+
+> Task :simulateJavaRelease
+If you receive errors loading the JNI dependencies, make sure you have the latest Visual Studio C++ Redstributable installed.
+That can be found at https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+HAL Extensions: Attempting to load: halsim_gui
+Simulator GUI Initializing.
+Simulator GUI Initialized!
+HAL Extensions: Successfully loaded extension
+********** Robot program starting **********
+NT: Listening on NT3 port 1735, NT4 port 5810
+[DogLog] LogThread started
+[DogLog] Options changed: DogLogOptions[ntPublish=dev.doglog.DogLogOptions$$Lambda$40/0x0000019b81036e98@1a99abb1, captureNt=false, captureDs=true, logExtras=true, captureConsole=true, logEntryQueueCapacity=1000, ntTunables=dev.doglog.DogLogOptions$$Lambda$41/0x0000019b810370b0@1366b5ad]
+********** Robot program startup complete **********
+Default simulationPeriodic() method... Override me!
+Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:436): Loop time of 0.02s overrun
+
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	SmartDashboard.updateValues(): 0.000017s
+	robotPeriodic(): 0.000261s
+	LiveWindow.updateValues(): 0.000001s
+	Shuffleboard.update(): 0.000003s
+	disabledPeriodic(): 0.001601s
+	simulationPeriodic(): 0.000003s
+
+Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:436): Loop time of 0.02s overrun
+
+CommandScheduler loop overrun
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	buttons.run(): 0.000008s
+	Wrist.periodic(): 0.036652s
+
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	SmartDashboard.updateValues(): 0.000010s
+	robotPeriodic(): 0.039065s
+	LiveWindow.updateValues(): 0.000000s
+	Shuffleboard.update(): 0.000002s
+	disabledPeriodic(): 0.000015s
+	simulationPeriodic(): 0.000002s
+
+Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:436): Loop time of 0.02s overrun
+
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	SmartDashboard.updateValues(): 0.000006s
+	robotPeriodic(): 0.000064s
+	LiveWindow.updateValues(): 0.000000s
+	Shuffleboard.update(): 0.000001s
+	disabledPeriodic(): 0.039215s
+	simulationPeriodic(): 0.000002s
+
+Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:436): Loop time of 0.02s overrun
+
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	SmartDashboard.updateValues(): 0.000006s
+	robotPeriodic(): 0.000173s
+	LiveWindow.updateValues(): 0.000000s
+	Shuffleboard.update(): 0.000001s
+	disabledPeriodic(): 0.038252s
+	simulationPeriodic(): 0.000002s
+
+Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:436): Loop time of 0.02s overrun
+
+Warning at edu.wpi.first.wpilibj.Tracer.lambda$printEpochs$0(Tracer.java:62): 	SmartDashboard.updateValues(): 0.000001s
+	robotPeriodic(): 0.000069s
+	LiveWindow.updateValues(): 0.000000s
+	Shuffleboard.update(): 0.000001s
+	disabledPeriodic(): 0.034161s
+	simulationPeriodic(): 0.000001s
+
+DataLog: Logging to 'C:\Users\hwin\FRC\physicsSimulation/logs\FRC_TBD_8e15337ca6358917.wpilog' (152.3 GiB free space)
+
+> Task :simulateJava
+
+BUILD SUCCESSFUL in 3m 42s
+5 actionable tasks: 2 executed, 3 up-to-date

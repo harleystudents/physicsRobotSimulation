@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.commands.WristCommands;
 import frc.robot.subsystems.wrist.Wrist;
 import frc.robot.subsystems.wrist.mechanical.ArmSim;
 
@@ -13,6 +14,7 @@ public class Subsystems {
 
   public Subsystems(Wrist wrist) {
     this.wrist = wrist;
+    wrist.setDefaultCommand(WristCommands.occilate(wrist));
 
     ExclusiveSubsystem[] lockedResources = {wrist};
     SharedSubsystem[] locklessResources = {};

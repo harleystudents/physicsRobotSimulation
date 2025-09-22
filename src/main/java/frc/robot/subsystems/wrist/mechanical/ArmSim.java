@@ -10,13 +10,6 @@ public class ArmSim extends Arm {
     private final SimulatedDCMotor motor;
     private final ArmMechanism arm;
     private final Timer timer = new Timer();
-    private WristState currentState = WristState.FORWARD;
-
-    private enum WristState {
-        FORWARD,
-        BACKWARD,
-        STOPPED
-    }
 
     public ArmSim() {
         motor = new SimulatedDCMotor();
@@ -24,8 +17,8 @@ public class ArmSim extends Arm {
         arm = new ArmMechanism(
             DCMotor.getKrakenX60(1), // Motor
             motor,             // Motor Controller
-            100.0,            // Gearing
-            0.05,             // Moment of Inertia (kg m^2)
+            100,            // Gearing
+            0.2,             // Moment of Inertia (kg m^2)
             -Math.PI / 2,      // Min Angle (radians)
             Math.PI / 2,       // Max Angle (radians)
             2.0,              // Weight (kg)
@@ -44,10 +37,9 @@ public class ArmSim extends Arm {
 
     @Override
     public void periodic() {
-        arm.update(timer.get());
+        double dt = Math.min(timer.get(), 0.05);
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/dt", dt);
+        arm.update(dt);
         timer.reset();
-        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Position", arm.getState().getPosition());
-        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Velocity", arm.getState().getVelocity());
-        DogLog.log("Robot/Subsystems/Wrist/ArmSim/Acceleration", arm.getState().getAcceleration());
     }
 }
