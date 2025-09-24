@@ -3,6 +3,7 @@ package frc.robot.subsystems.wrist.mechanical;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
+import utils.sim.HardLimits;
 import utils.sim.hardwareSim.SimulatedDCMotor;
 import utils.sim.mechanisms.ArmMechanism;
 
@@ -19,8 +20,7 @@ public class ArmSim extends Arm {
             motor,             // Motor Controller
             100,            // Gearing
             0.2,             // Moment of Inertia (kg m^2)
-            -Math.PI / 2,      // Min Angle (radians)
-            Math.PI / 2,       // Max Angle (radians)
+            new HardLimits(true),
             2.0,              // Weight (kg)
             0.1               // Center of Mass (meters from pivot)
         );

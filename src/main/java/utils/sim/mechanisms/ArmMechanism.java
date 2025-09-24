@@ -3,20 +3,17 @@ package utils.sim.mechanisms;
 
 
 import dev.doglog.DogLog;
-
 import edu.wpi.first.math.system.plant.DCMotor;
-
+import utils.sim.HardLimits;
 import utils.sim.MechanismState;
-
 import utils.sim.SimFrameWork;
-
 import utils.sim.hardwareSim.SimMotorController;
 
 
 
 public class ArmMechanism extends SimFrameWork{
 
-    private MechanismState state = new MechanismState(Math.PI/2, 0.0, 0.0);
+    private MechanismState state = new MechanismState(Math.PI/4, 0.0, 0.0);
 
     private DCMotor motor;
 
@@ -24,11 +21,9 @@ public class ArmMechanism extends SimFrameWork{
 
     private double momentOfInertia;
 
-    private double minAngle;
+    private HardLimits limits;
 
-    private double maxAngle;
-
-    private double weight;
+    private double mass;
 
     private double centerOfMass;
 
@@ -57,9 +52,7 @@ public class ArmMechanism extends SimFrameWork{
 
     double momentOfInertia,
 
-    double minAngle,
-
-    double maxAngle,
+    HardLimits limits,
 
     double weight,
 
@@ -73,11 +66,9 @@ public class ArmMechanism extends SimFrameWork{
 
     this.momentOfInertia = momentOfInertia;
 
-    this.minAngle = minAngle;
+    this.limits = limits;
 
-    this.maxAngle = maxAngle;
-
-    this.weight = weight;
+    this.mass = weight;
 
     this.centerOfMass = centerOfMass;
 
@@ -113,6 +104,7 @@ public class ArmMechanism extends SimFrameWork{
     double motorTorque;
     double mechanismVelocity = state.getVelocity();//rad/s
     double motorVelocity = (mechanismVelocity * this.gearing)/(Math.PI/2);//rot/s
+    double brakingTorque = 0.0;
     // 2. Calculate motor torque based on the controller output type
     if (output.useCurrent()) {
 
@@ -123,34 +115,31 @@ public class ArmMechanism extends SimFrameWork{
     } else {
 
         // Controller is providing a target voltage
+        if(controller.isBrakeMode() && this.state.getVelocity() != 0.0){
+            brakingTorque = (this.state.getVelocity()/Math.abs(this.state.getVelocity())) * 0.01144 * Math.abs(this.state.getVelocity());
+        }
+            
 
         double appliedVoltage = output.voltage();
 
 
-
-        // If brake mode is on and commanded voltage is near zero, apply strong resistance
-
-        if (this.controller.isBrakeMode() && Math.abs(appliedVoltage) < 1e-2) {
-
-        this.state.setVelocity(this.state.getVelocity() * 0.1);
-
-        appliedVoltage = 0;
-
-        }
-
-
         motorTorque = this.motor.getTorque(this.motor.getCurrent(motorVelocity, appliedVoltage));
+
+        DogLog.log("Sim/Arm/Motor Torque", motorTorque);
+        DogLog.log("Sim/Arm/Braking Force", brakingTorque);
 
     }
 
 
     // 3. Calculate physics
 
-    final double g = 9.8;
+    final double g = -9.8;
 
-    double gravityTorque = this.centerOfMass * this.weight * g * Math.cos(state.getPosition());
+    double gravityTorque = this.centerOfMass * this.mass * g * Math.cos(state.getPosition()); 
 
-    double totalTorque = -gravityTorque;
+    double totalTorque = gravityTorque+(motorTorque * this.gearing) + brakingTorque;
+
+
 
 
 
@@ -166,17 +155,17 @@ public class ArmMechanism extends SimFrameWork{
 
     // 5. Apply constraints
 
-    if (this.state.getPosition() > this.maxAngle) {
+    if (this.state.getPosition() > limits.getMax() && !limits.isUnbounded()) {
 
-        this.state.setPosition(this.maxAngle);
+        this.state.setPosition(limits.getMax());
 
         this.state.setVelocity(0.0);
         DogLog.log("Sim/Arm/Is At Hard Reverse Limit", false);
         DogLog.log("Sim/Arm/Is At Hard Forward Limit", true);
 
-    } else if (this.state.getPosition() < this.minAngle) {
+    } else if (this.state.getPosition() < limits.getMin() && !limits.isUnbounded()) {
 
-        this.state.setPosition(this.minAngle);
+        this.state.setPosition(limits.getMin());
 
         this.state.setVelocity(0.0);
         DogLog.log("Sim/Arm/Is At Hard Reverse Limit", true);
