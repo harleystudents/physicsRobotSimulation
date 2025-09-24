@@ -2,8 +2,10 @@ package frc.robot.controllers;
 
 import java.util.function.DoubleSupplier;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.WristCommands;
@@ -17,8 +19,7 @@ public class DriverController {
   public void bind(
       Subsystems subsystems) {
     final var wrist = subsystems.wrist;
-
-    this.A.onTrue(WristCommands.occilate(wrist));
+    DogLog.log("Controller/Bound", true);
     this.B.onTrue(WristCommands.runAtVoltage(wrist, 5.0));
     this.X.onTrue(WristCommands.runAtVoltage(wrist, -5.0));
     

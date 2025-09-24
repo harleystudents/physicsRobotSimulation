@@ -29,6 +29,7 @@ public class SimulatedDCMotor implements SimMotorController {
     public void setVoltage(double voltage) {
         this.controlMode = ControlMode.VOLTAGE;
         this.commandedValue = voltage;
+        DogLog.log("Sim/SimulatedDCMotor/SetVoltage", voltage);
     }
     @Override
     public double getPosition() {

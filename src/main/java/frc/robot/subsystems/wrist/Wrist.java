@@ -1,5 +1,6 @@
 package frc.robot.subsystems.wrist;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Subsystems.ExclusiveSubsystem;
 import frc.robot.subsystems.wrist.mechanical.Arm;
@@ -20,6 +21,7 @@ public class Wrist implements ExclusiveSubsystem{
     }
 
     public void setVoltage(double voltage){
+        DogLog.log("Robot/Subsystems/Wrist/IN WRIST.Java VOLTAGE SET TO", voltage);
         wrist.setVoltage(voltage);
     }
     public double getAngle(){

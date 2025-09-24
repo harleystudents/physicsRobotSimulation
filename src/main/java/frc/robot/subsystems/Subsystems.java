@@ -14,6 +14,7 @@ public class Subsystems {
 
   public Subsystems(Wrist wrist) {
     this.wrist = wrist;
+    wrist.setDefaultCommand(WristCommands.occilate(wrist));
 
     ExclusiveSubsystem[] lockedResources = {wrist};
     SharedSubsystem[] locklessResources = {};

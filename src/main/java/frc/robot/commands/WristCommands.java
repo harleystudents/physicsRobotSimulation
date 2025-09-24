@@ -9,16 +9,14 @@ import frc.robot.subsystems.wrist.Wrist;
 
 public class WristCommands {
     public static Command occilate(Wrist wrist){
-        return Commands.deadline(
-                Commands.sequence(
-                        Commands.run(() -> wrist.setVoltage(5), wrist).withTimeout(1),
-                        Commands.runOnce(() -> wrist.setVoltage(0)).withTimeout(.1), // Stop the motor
-                        Commands.waitSeconds(0.5),
-                        Commands.run(() -> wrist.setVoltage(-5), wrist).withTimeout(3),
-                        Commands.runOnce(() -> wrist.setVoltage(0)).withTimeout(.1) // Stop the motor
-                        ).withName("OCCILATING"));
+        return Commands.sequence(
+                        Commands.runOnce(()->DogLog.log("Robot/Commands/Ocilation", true)).withTimeout(.05),
+                        runAtVoltage(wrist, 5.0),
+                        runAtVoltage(wrist, -5.0),
+                        Commands.runOnce(() -> DogLog.log("Robot/Commands/Ocilation", false)).withTimeout(.05)
+                        ).repeatedly();
     }
     public static Command runAtVoltage(Wrist wrist, double voltage){
-        return Commands.runOnce((() -> wrist.setVoltage(voltage)), wrist).withTimeout(4.0).andThen(Commands.runOnce(()->wrist.setVoltage(0.0), wrist)).withName("Run Wrist at " + voltage + "V");
+        return Commands.runOnce((() -> wrist.setVoltage(voltage)), wrist).withTimeout(4.0).andThen(Commands.runOnce(()->wrist.setVoltage(0.0), wrist)).withTimeout(2.0).withName("Run Wrist at " + voltage + "V");
     }
 }

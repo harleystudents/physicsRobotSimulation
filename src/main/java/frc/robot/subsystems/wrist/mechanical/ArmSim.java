@@ -18,7 +18,7 @@ public class ArmSim extends Arm {
         arm = new ArmMechanism(
             DCMotor.getKrakenX60(1), // Motor
             motor,             // Motor Controller
-            100,            // Gearing
+            20,            // Gearing
             0.2,             // Moment of Inertia (kg m^2)
             new HardLimits(true),
             2.0,              // Weight (kg)

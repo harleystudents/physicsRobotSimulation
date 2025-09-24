@@ -9,6 +9,7 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.WristCommands;
 import frc.robot.controllers.DriverController;
 import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.wrist.Wrist;
@@ -29,7 +30,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
+    // CommandScheduler.getInstance().run();
     DogLog.log("Commands/running", CommandScheduler.getInstance().toString());
     DogLog.log("Robot/Arm/Position", m_subsystems.wrist.getAngle());
   }

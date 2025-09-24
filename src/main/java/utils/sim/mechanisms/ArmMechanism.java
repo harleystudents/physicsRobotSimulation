@@ -101,29 +101,31 @@ public class ArmMechanism extends SimFrameWork{
     // For now, assume a fixed 12V supply
 
     var output = this.controller.run(dt, 12.0);
+    DogLog.log("Sim/Arm/Voltage", output.voltage());
+    DogLog.log("Sim/Arm/Current", output.current());
     double motorTorque;
     double mechanismVelocity = state.getVelocity();//rad/s
-    double motorVelocity = (mechanismVelocity * this.gearing)/(Math.PI/2);//rot/s
+    double motorVelocity = (mechanismVelocity * this.gearing);//rad/s
     double brakingTorque = 0.0;
     // 2. Calculate motor torque based on the controller output type
     if (output.useCurrent()) {
 
         // Controller is providing a target current
 
-        motorTorque = this.motor.getTorque(output.current());
+        motorTorque = this.motor.getTorque(output.current())*this.gearing;
 
     } else {
 
         // Controller is providing a target voltage
         if(controller.isBrakeMode() && this.state.getVelocity() != 0.0){
-            brakingTorque = (this.state.getVelocity()/Math.abs(this.state.getVelocity())) * 0.01144 * Math.abs(this.state.getVelocity());
+            brakingTorque = -(this.state.getVelocity()/Math.abs(this.state.getVelocity())) * 0.01144 * Math.abs(this.state.getVelocity()) * this.gearing;
         }
             
 
         double appliedVoltage = output.voltage();
 
 
-        motorTorque = this.motor.getTorque(this.motor.getCurrent(motorVelocity, appliedVoltage));
+        motorTorque = this.motor.getTorque(this.motor.getCurrent(motorVelocity, appliedVoltage))*this.gearing;
 
         DogLog.log("Sim/Arm/Motor Torque", motorTorque);
         DogLog.log("Sim/Arm/Braking Force", brakingTorque);
@@ -137,7 +139,8 @@ public class ArmMechanism extends SimFrameWork{
 
     double gravityTorque = this.centerOfMass * this.mass * g * Math.cos(state.getPosition()); 
 
-    double totalTorque = gravityTorque+(motorTorque * this.gearing) + brakingTorque;
+    // double totalTorque = gravityTorque +(motorTorque * this.gearing) + brakingTorque;
+    double totalTorque = gravityTorque+brakingTorque+motorTorque;
 
 
 
