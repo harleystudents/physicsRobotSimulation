@@ -7,6 +7,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import utils.sim.HardLimits;
 import utils.sim.MechanismState;
 import utils.sim.SimFrameWork;
+import utils.sim.Torques;
 import utils.sim.hardwareSim.SimMotorController;
 
 
@@ -14,6 +15,10 @@ import utils.sim.hardwareSim.SimMotorController;
 public class ArmMechanism extends SimFrameWork{
 
     private MechanismState state = new MechanismState(Math.PI/4, 0.0, 0.0);
+    private Torques torques = new Torques(0.0, 0.0, 0.0);
+    private double motorTorque = 0.0;
+    private double brakingTorque = 0.0;
+    private double gravityTorque = 0.0;
 
     private DCMotor motor;
 
@@ -92,6 +97,15 @@ public class ArmMechanism extends SimFrameWork{
 
     }
 
+    @Override
+
+    public Torques getTorques() {
+        torques.mTorque = motorTorque;
+        torques.gTorque = gravityTorque;
+        torques.bTorque = brakingTorque;
+        return torques;
+    }
+
 
 
     @Override
@@ -103,10 +117,8 @@ public class ArmMechanism extends SimFrameWork{
     var output = this.controller.run(dt, 12.0);
     DogLog.log("Sim/Arm/Voltage", output.voltage());
     DogLog.log("Sim/Arm/Current", output.current());
-    double motorTorque;
     double mechanismVelocity = state.getVelocity();//rad/s
     double motorVelocity = (mechanismVelocity * this.gearing);//rad/s
-    double brakingTorque = 0.0;
     // 2. Calculate motor torque based on the controller output type
     if (output.useCurrent()) {
 
@@ -141,7 +153,7 @@ public class ArmMechanism extends SimFrameWork{
 
     final double g = -9.8;
 
-    double gravityTorque = this.centerOfMass * this.mass * g * Math.cos(state.getPosition()); 
+    gravityTorque = this.centerOfMass * this.mass * g * Math.cos(state.getPosition()); 
 
     // double totalTorque = gravityTorque +(motorTorque * this.gearing) + brakingTorque;
     double totalTorque = gravityTorque+brakingTorque+motorTorque;
