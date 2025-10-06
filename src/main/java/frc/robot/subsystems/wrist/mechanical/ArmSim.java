@@ -25,7 +25,7 @@ public class ArmSim extends Arm {
             20,            // Gearing
             0.2,             // Moment of Inertia (kg m^2)
             new HardLimits(-Math.PI/2, Math.PI/2), // Min/Max Angle (radians)
-            2.0,              // Weight (kg)
+            10.0,              // Weight (kg)
             0.1               // Center of Mass (meters from pivot)
         );
         timer.start();
