@@ -26,12 +26,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureConsole(true));
+    CommandScheduler.getInstance().onCommandInitialize(command -> DogLog.log("Commands/Running " + command.getName(), true));
+    CommandScheduler.getInstance().onCommandFinish(command -> DogLog.log("Commands/Running " + command.getName(), false));
   }
 
   @Override
   public void robotPeriodic() {
-    // CommandScheduler.getInstance().run();
-    DogLog.log("Commands/running", CommandScheduler.getInstance().toString());
+    CommandScheduler.getInstance().run();
     DogLog.log("Robot/Arm/Position", m_subsystems.wrist.getAngle());
   }
 

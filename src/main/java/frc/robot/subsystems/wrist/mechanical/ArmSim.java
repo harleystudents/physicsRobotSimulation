@@ -11,16 +11,18 @@ public class ArmSim extends Arm {
     private final SimulatedDCMotor motor;
     private final ArmMechanism arm;
     private final Timer timer = new Timer();
+    private double counter = 0.0;
 
     public ArmSim() {
         motor = new SimulatedDCMotor();
         motor.setBrakeMode(true);
+        // motor.setBrakeMode(true);
         arm = new ArmMechanism(
             DCMotor.getKrakenX60(1), // Motor
             motor,             // Motor Controller
             20,            // Gearing
             0.2,             // Moment of Inertia (kg m^2)
-            new HardLimits(true),
+            new HardLimits(-Math.PI/2, Math.PI/2), // Min/Max Angle (radians)
             2.0,              // Weight (kg)
             0.1               // Center of Mass (meters from pivot)
         );
@@ -38,8 +40,10 @@ public class ArmSim extends Arm {
     @Override
     public void periodic() {
         double dt = Math.min(timer.get(), 0.05);
+        DogLog.log("Robot/Subsystems/Wrist/ArmSim/periodicCount", counter);
         DogLog.log("Robot/Subsystems/Wrist/ArmSim/dt", dt);
         arm.update(dt);
         timer.reset();
+        counter += 1;
     }
 }

@@ -124,8 +124,12 @@ public class ArmMechanism extends SimFrameWork{
 
         double appliedVoltage = output.voltage();
 
-
-        motorTorque = this.motor.getTorque(this.motor.getCurrent(motorVelocity, appliedVoltage))*this.gearing;
+        if (appliedVoltage == 0.0){
+            motorTorque = 0.0;
+        }
+        else{
+            motorTorque = this.motor.getTorque(this.motor.getCurrent(motorVelocity, appliedVoltage))*this.gearing;
+        }
 
         DogLog.log("Sim/Arm/Motor Torque", motorTorque);
         DogLog.log("Sim/Arm/Braking Force", brakingTorque);

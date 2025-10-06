@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.WristCommands;
-// import igknighters.commands.tests.WheelRadiusCharacterization;
-// import igknighters.commands.tests.WheelRadiusCharacterization.Direction;
 import frc.robot.subsystems.Subsystems;
 
 public class DriverController {
@@ -20,8 +18,11 @@ public class DriverController {
       Subsystems subsystems) {
     final var wrist = subsystems.wrist;
     DogLog.log("Controller/Bound", true);
-    this.B.onTrue(WristCommands.runAtVoltage(wrist, 5.0));
-    this.X.onTrue(WristCommands.runAtVoltage(wrist, -5.0));
+    this.A.onTrue(WristCommands.runAtVoltage(wrist, 2.0));
+    this.B.onTrue(WristCommands.runAtVoltage(wrist, -2.0));
+    this.X.onTrue(WristCommands.runAtVoltage(wrist, 0));
+
+
     
   }
 
