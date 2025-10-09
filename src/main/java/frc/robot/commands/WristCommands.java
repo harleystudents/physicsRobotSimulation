@@ -9,4 +9,8 @@ public class WristCommands {
     public static Command runAtVoltage(Wrist wrist, double voltage){
         return wrist.run((() -> wrist.setVoltage(voltage))).withName("SetWristVoltage: "+voltage);
     }
+
+    public static Command goToPosition(Wrist wrist, double angle) {
+        return wrist.run((() -> wrist.setPosition(angle))).withName("GoToPosition: "+angle);
+    }
 }

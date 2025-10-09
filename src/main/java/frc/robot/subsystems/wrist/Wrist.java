@@ -24,6 +24,11 @@ public class Wrist implements ExclusiveSubsystem{
         DogLog.log("Robot/Subsystems/Wrist/IN WRIST.Java VOLTAGE SET TO", voltage);
         wrist.setVoltage(voltage);
     }
+
+    public void setPosition(double angle){
+        DogLog.log("Robot/Subsystems/Wrist/IN WRIST.Java ANGLE SET TO", angle);
+        wrist.setPosition(angle);
+    }
     public double getAngle(){
         return wrist.getAngle();
     }

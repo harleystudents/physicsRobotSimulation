@@ -13,6 +13,7 @@ public class WristVisualizer {
     Mechanism2d wristMechanism = new Mechanism2d(30, 30);
     MechanismRoot2d wristBase = wristMechanism.getRoot("Wrist Base", 15, 15);
     MechanismLigament2d arm = wristBase.append(new MechanismLigament2d("Arm", 10, 0));
+    MechanismLigament2d goal = wristBase.append(new MechanismLigament2d("Goal", 10, 0, 5, new Color8Bit(Color.kBlack)));
     MechanismRoot2d gRoot2d = wristMechanism.getRoot("gTorque", 1, 10);
     MechanismLigament2d gTorqueArm = gRoot2d.append(new MechanismLigament2d("gTorque", 5, 90, 5, new Color8Bit(Color.kBlack))); // black so does not show up
     MechanismRoot2d mRoot2d = wristMechanism.getRoot("mTorque", 3, 10);
@@ -64,7 +65,7 @@ public class WristVisualizer {
         DogLog.log("Robot/Subsystems/Wrist/Visualizer/Updated to angle of: ", angle);
         arm.setAngle(angle);
     }
-    public void update(double angle, Torques torques){
+    public void update(double angle, double goal, boolean positionControlled, Torques torques){
         //The angle is in degrees
         DogLog.log("Robot/Subsystems/Wrist/Visualizer/Updated to angle of: ", angle);
         arm.setAngle(angle);
@@ -77,6 +78,15 @@ public class WristVisualizer {
         mTorqueArm.setAngle(interpolateDirectionFromTorques(torques.mTorque));
         bTorqueArm.setAngle(interpolateDirectionFromTorques(torques.bTorque));
         tTorqueArm.setAngle(interpolateDirectionFromTorques(torques.gTorque + torques.mTorque + torques.bTorque));
+        
+        if (positionControlled){
+            this.goal.setColor(new Color8Bit(Color.kGreen));
+            this.goal.setLength(10);
+            this.goal.setAngle(goal);
+        } else {
+            this.goal.setColor(new Color8Bit(Color.kBlack));
+            this.goal.setLength(0);
+        }
 
         // DogLog.log("Robot/Subsystems/Wrist/Visualizer/Gravity Torque", gTorque);
         // DogLog.log("Robot/Subsystems/Wrist/Visualizer/Motor Torque", mTorque);

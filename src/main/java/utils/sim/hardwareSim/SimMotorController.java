@@ -1,5 +1,9 @@
 package utils.sim.hardwareSim;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+
+import utils.sim.MechanismState;
+
 /**
  * An interface to represent a motor controller in the simulation.
  */
@@ -19,7 +23,6 @@ public interface SimMotorController {
      *
      * @param dt the time step for the simulation.
      * @param supplyVoltage the supply voltage from the battery.
-     * @param state the current state of the mechanism (e.g., position, velocity).
      * @return the output of the controller.
      */
     ControllerOutput run(double dt, double supplyVoltage);
@@ -37,12 +40,13 @@ public interface SimMotorController {
      */
     double getPosition();
 
-    /**
-     * sets the current position of the motor (if applicable).
-     * @return void
-     */
-    void setPosition(double position);
+    void update(MechanismState state);
 
+    void goToPosition(double position);
+
+    void setPID(double kP, double kI, double kD);
+
+    void setConfig(TalonFXConfiguration config);
     /**
      * A factory method for a motor controller that does nothing.
      * @return A new no-op motor controller.
@@ -55,7 +59,7 @@ public interface SimMotorController {
                 return new ControllerOutput(0.0, 0.0, false);
             }
             @Override
-            public void setPosition(double position) {
+            public void update(MechanismState state) {
                 // No-op
             }
 
@@ -67,6 +71,21 @@ public interface SimMotorController {
             @Override
             public double getPosition() {
                 return 0.0;
+            }
+
+            @Override
+            public void goToPosition(double position) {
+                // No-op
+            }
+
+            @Override
+            public void setPID(double kP, double kI, double kD) {
+                // No-op
+            }
+
+            @Override
+            public void setConfig(TalonFXConfiguration config) {
+                // No-op
             }
         };
     }

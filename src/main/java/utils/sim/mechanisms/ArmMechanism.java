@@ -194,6 +194,7 @@ public class ArmMechanism extends SimFrameWork{
         DogLog.log("Sim/Arm/Is At Hard Reverse Limit", false);
         DogLog.log("Sim/Arm/Is At Hard Forward Limit", false);
     }
+    this.controller.update(state);
 
     }
 

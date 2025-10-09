@@ -18,9 +18,10 @@ public class DriverController {
       Subsystems subsystems) {
     final var wrist = subsystems.wrist;
     DogLog.log("Controller/Bound", true);
-    this.A.onTrue(WristCommands.runAtVoltage(wrist, 2.0));
-    this.B.onTrue(WristCommands.runAtVoltage(wrist, -2.0));
-    this.X.onTrue(WristCommands.runAtVoltage(wrist, 0));
+    this.A.onTrue(WristCommands.goToPosition(wrist, 0));
+    this.B.onTrue(WristCommands.goToPosition(wrist, Math.PI / 4));
+    this.X.onTrue(WristCommands.goToPosition(wrist, Math.PI / 2));
+    this.Y.onTrue(WristCommands.runAtVoltage(wrist, 2.0));
 
 
     
