@@ -9,14 +9,14 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.WristCommands;
 import frc.robot.controllers.DriverController;
 import frc.robot.subsystems.Subsystems;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.wrist.Wrist;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-  private Subsystems m_subsystems = new Subsystems(new Wrist());
+  private Subsystems m_subsystems = new Subsystems(new Wrist(), new Elevator());
   private DriverController m_driverController = new DriverController(0);
 
   public Robot() {
@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     DogLog.log("Robot/Arm/Position", m_subsystems.wrist.getAngle());
+    DogLog.log("Robot/Elevator/Height", m_subsystems.elevator.getHeight());
   }
 
   @Override

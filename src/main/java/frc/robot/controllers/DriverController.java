@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ElevatorCommands;
 import frc.robot.commands.WristCommands;
 import frc.robot.subsystems.Subsystems;
 
@@ -17,11 +18,17 @@ public class DriverController {
   public void bind(
       Subsystems subsystems) {
     final var wrist = subsystems.wrist;
+    final var elevator = subsystems.elevator;
     DogLog.log("Controller/Bound", true);
     this.A.onTrue(WristCommands.goToPosition(wrist, 0));
     this.B.onTrue(WristCommands.goToPosition(wrist, Math.PI / 4));
     this.X.onTrue(WristCommands.goToPosition(wrist, Math.PI / 2));
     this.Y.onTrue(WristCommands.runAtVoltage(wrist, .85));
+
+    this.DPU.onTrue(ElevatorCommands.goToHeight(elevator, 1.2));
+    this.DPD.onTrue(ElevatorCommands.goToHeight(elevator, 0.0));
+    this.DPR.onTrue(ElevatorCommands.goToHeight(elevator, 0.6));
+    this.DPL.onTrue(ElevatorCommands.runAtVoltage(elevator, 0.0));
 
 
     

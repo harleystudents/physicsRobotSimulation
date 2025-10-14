@@ -2,21 +2,21 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.commands.WristCommands;
 import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.mechanical.ArmSim;
+import frc.robot.subsystems.elevator.Elevator;
 
 
 public class Subsystems {
 
   public final Wrist wrist;
-  
+  public final Elevator elevator;
 
-  public Subsystems(Wrist wrist) {
+  public Subsystems(Wrist wrist, Elevator elevator) {
     this.wrist = wrist;
+    this.elevator = elevator;
     // wrist.setDefaultCommand(WristCommands.runAtVoltage(wrist, 2.0));
 
-    ExclusiveSubsystem[] lockedResources = {wrist};
+    ExclusiveSubsystem[] lockedResources = {wrist, elevator};
     SharedSubsystem[] locklessResources = {};
 
     CommandScheduler.getInstance().registerSubsystem(lockedResources);
