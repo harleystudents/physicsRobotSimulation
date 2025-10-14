@@ -21,7 +21,7 @@ public class DriverController {
     this.A.onTrue(WristCommands.goToPosition(wrist, 0));
     this.B.onTrue(WristCommands.goToPosition(wrist, Math.PI / 4));
     this.X.onTrue(WristCommands.goToPosition(wrist, Math.PI / 2));
-    this.Y.onTrue(WristCommands.runAtVoltage(wrist, 2.0));
+    this.Y.onTrue(WristCommands.runAtVoltage(wrist, .85));
 
 
     

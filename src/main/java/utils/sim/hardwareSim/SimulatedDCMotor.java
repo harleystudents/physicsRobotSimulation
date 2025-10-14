@@ -25,7 +25,7 @@ public class SimulatedDCMotor implements SimMotorController {
     private double position = 0.0;
     private final ProfiledPIDController pidController;
     private final ArmFeedforward armFeedforward;
-    private TalonFXConfiguration config = new TalonFXConfiguration();
+    private boolean controlledThisCycle = false;
     double velocity = 0.0;
 
     public SimulatedDCMotor() {
@@ -37,7 +37,6 @@ public class SimulatedDCMotor implements SimMotorController {
 
     @Override
     public void setConfig(TalonFXConfiguration config) {
-        this.config = config;
         this.pidController.setPID(config.Slot0.kP, config.Slot0.kI, config.Slot0.kD);
         this.armFeedforward.setKa(config.Slot0.kA);
         this.armFeedforward.setKs(config.Slot0.kS);
@@ -63,6 +62,7 @@ public class SimulatedDCMotor implements SimMotorController {
      * @param voltage The voltage to apply.
      */
     public void setVoltage(double voltage) {
+        controlledThisCycle = true;
         this.controlMode = ControlMode.VOLTAGE;
         this.commandedValue = voltage;
         DogLog.log("Sim/SimulatedDCMotor/SetVoltage", voltage);
@@ -77,6 +77,7 @@ public class SimulatedDCMotor implements SimMotorController {
      * @param current The current to apply.
      */
     public void setCurrent(double current) {
+        this.controlledThisCycle = true;
         this.controlMode = ControlMode.CURRENT;
         this.commandedValue = current;
     }
@@ -92,17 +93,26 @@ public class SimulatedDCMotor implements SimMotorController {
 
     @Override
     public void goToPosition(double position) {
+        this.controlledThisCycle = true;
         this.controlMode = ControlMode.POSITION;
         this.pidController.setGoal(position);
     }
 
     @Override
     public ControllerOutput run(double dt, double supplyVoltage) {
-        if (controlMode == ControlMode.CURRENT) {
+        if(!controlledThisCycle){
+            // If the motor was not controlled this cycle, set voltage to 0
+            this.commandedValue = 0.0;
+            this.controlMode = ControlMode.VOLTAGE;
+            controlledThisCycle = false;
+            return new ControllerOutput(0.0, 0.0, false);
+        }
+        else if (controlMode == ControlMode.CURRENT) {
             // Return an object with the current value and a flag indicating to use current
+            controlledThisCycle = false;
             return new ControllerOutput(0.0, this.commandedValue, true); 
         } else if (controlMode == ControlMode.POSITION) {
-            
+            controlledThisCycle = false;
             double voltage = this.pidController.calculate(this.position) + armFeedforward.calculate(this.position, this.velocity);
             DogLog.log("Sim/SimulatedDCMotor/PositionError", this.pidController.getPositionError());
             DogLog.log("Sim/SimulatedDCMotor/PositionSetpoint", this.pidController.getSetpoint().position);
@@ -110,6 +120,7 @@ public class SimulatedDCMotor implements SimMotorController {
             voltage = voltage > 12.0 ? 12.0: voltage < -12.0 ? -12.0 : voltage; // Clamp to +/- 12V
             return new ControllerOutput(voltage, 0.0, false);
         } else {
+            controlledThisCycle = false;
             // Return an object with the voltage value and a flag indicating to use voltage
             return new ControllerOutput(this.commandedValue, 0.0, false);
         }
@@ -118,10 +129,5 @@ public class SimulatedDCMotor implements SimMotorController {
     @Override
     public boolean isBrakeMode() {
         return this.brakeMode;
-    }
-
-    @Override
-    public void setPID(double kP, double kI, double kD) {
-        // This method is now handled by the MotorConfig
     }
 }

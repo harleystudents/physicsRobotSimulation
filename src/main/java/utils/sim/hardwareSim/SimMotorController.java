@@ -44,8 +44,6 @@ public interface SimMotorController {
 
     void goToPosition(double position);
 
-    void setPID(double kP, double kI, double kD);
-
     void setConfig(TalonFXConfiguration config);
     /**
      * A factory method for a motor controller that does nothing.
@@ -75,11 +73,6 @@ public interface SimMotorController {
 
             @Override
             public void goToPosition(double position) {
-                // No-op
-            }
-
-            @Override
-            public void setPID(double kP, double kI, double kD) {
                 // No-op
             }
 
