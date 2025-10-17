@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.subsystems.elevator.ElevatorVisualizer;
 import utils.sim.HardLimits;
 import utils.sim.hardwareSim.SimulatedDCMotor;
 import utils.sim.mechanisms.ElevatorMechanism;
@@ -13,12 +14,13 @@ public class ElevatorSim extends ElevatorBase {
   private final SimulatedDCMotor motor;
   private final ElevatorMechanism elevator;
   private final Timer timer = new Timer();
+  private final ElevatorVisualizer visualizer = new ElevatorVisualizer(true);
 
   private boolean positionControlled = false;
   private double desiredHeightMeters = 0.0;
 
   public ElevatorSim() {
-    motor = new SimulatedDCMotor();
+    motor = new SimulatedDCMotor("elevator sim");
     motor.setBrakeMode(true);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -32,12 +34,12 @@ public class ElevatorSim extends ElevatorBase {
 
     elevator =
         new ElevatorMechanism(
-            DCMotor.getKrakenX60(1),
+            DCMotor.getKrakenX60(2), // type of motor
             motor,
-            12.0,
-            0.025,
-            6.0,
-            new HardLimits(0.0, 1.5),
+            12.0, // Motor to mechanism gearing
+            0.025, //meters
+            6.0, // kg
+            new HardLimits(0.0, 1.5), // meters
             30.0);
 
     timer.start();
@@ -69,6 +71,8 @@ public class ElevatorSim extends ElevatorBase {
     DogLog.log("Robot/Subsystems/Elevator/ElevatorSim/dt", dt);
     elevator.update(dt);
     timer.reset();
+    
+    visualizer.update(elevator.getState().getPosition(), desiredHeightMeters, elevator.getTorques(), positionControlled);
 
     DogLog.log("Robot/Subsystems/Elevator/ElevatorSim/Height", getHeight());
     DogLog.log("Robot/Subsystems/Elevator/ElevatorSim/ClosedLoop", positionControlled);

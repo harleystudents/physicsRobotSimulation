@@ -1,7 +1,11 @@
 package utils.sim.mechanisms;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
+import utils.debug.DebugUtils;
 import utils.sim.HardLimits;
 import utils.sim.MechanismState;
 import utils.sim.SimFrameWork;
@@ -132,6 +136,19 @@ public class ElevatorMechanism extends SimFrameWork {
                 DogLog.log("Sim/Elevator/Is At Hard Upper Limit", false);
             }
         }
+        Map<String, Object> vars = new LinkedHashMap<>();
+        vars.put("motorVelocity", motorVelocity);
+        vars.put("motor torque", motorTorque);
+        vars.put("motorForce", motorForce);
+        vars.put("brakingForce", brakingForce);
+        vars.put("gravityForce", gravityForce);
+        vars.put("state accel", state.getAcceleration());
+        vars.put("state vel", state.getVelocity());
+        vars.put("state pos", state.getPosition());
+
+
+
+        DebugUtils.dumpVars(vars);
 
         controller.update(state);
     }
