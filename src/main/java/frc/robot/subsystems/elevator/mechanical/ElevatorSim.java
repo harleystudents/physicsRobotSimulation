@@ -40,7 +40,8 @@ public class ElevatorSim extends ElevatorBase {
             0.025, //meters
             6.0, // kg
             new HardLimits(0.0, 1.5), // meters
-            30.0);
+            30.0,
+            25.0);
 
     timer.start();
   }
