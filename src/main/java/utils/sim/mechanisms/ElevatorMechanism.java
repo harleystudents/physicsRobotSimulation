@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import utils.debug.DebugUtils;
 import utils.sim.HardLimits;
@@ -40,6 +41,9 @@ public class ElevatorMechanism extends SimFrameWork {
     /** Acceleration due to gravity (m/s^2). */
     private static final double GRAVITY = -9.80665;
 
+    /** Maximum magnitude of linear acceleration allowed for the carriage. */
+    private final double maxAcceleration;
+
     /**
      * Creates a new {@link ElevatorMechanism} instance.
      *
@@ -50,6 +54,8 @@ public class ElevatorMechanism extends SimFrameWork {
      * @param carriageMass The mass of the elevator carriage in kilograms.
      * @param limits Hard limits that bound the carriage travel.
      * @param brakeCoefficient The viscous braking coefficient (N·s/m) applied when brake mode is enabled.
+     * @param maxAcceleration Maximum magnitude of carriage acceleration (m/s^2). Use {@code Double.POSITIVE_INFINITY}
+     *                        to disable clamping.
      */
     public ElevatorMechanism(
             DCMotor motor,
@@ -58,7 +64,8 @@ public class ElevatorMechanism extends SimFrameWork {
             double drumRadius,
             double carriageMass,
             HardLimits limits,
-            double brakeCoefficient) {
+            double brakeCoefficient,
+            double maxAcceleration) {
         this.motor = motor;
         this.controller = controller;
         this.gearing = gearing;
@@ -66,6 +73,11 @@ public class ElevatorMechanism extends SimFrameWork {
         this.carriageMass = carriageMass;
         this.limits = limits;
         this.brakeCoefficient = brakeCoefficient;
+        double sanitizedMaxAcceleration = Math.abs(maxAcceleration);
+        if (Double.isNaN(sanitizedMaxAcceleration)) {
+            sanitizedMaxAcceleration = Double.POSITIVE_INFINITY;
+        }
+        this.maxAcceleration = sanitizedMaxAcceleration;
     }
 
     @Override
@@ -115,6 +127,21 @@ public class ElevatorMechanism extends SimFrameWork {
         gravityForce = carriageMass * GRAVITY;
 
         double totalForce = motorForce + brakingForce + gravityForce;
+        double unclampedAcceleration = totalForce / carriageMass;
+
+        boolean accelerationClamped = false;
+        if (Double.isFinite(maxAcceleration) && maxAcceleration > 0.0) {
+            double maxTotalForce = maxAcceleration * carriageMass;
+            double clampedTotalForce = MathUtil.clamp(totalForce, -maxTotalForce, maxTotalForce);
+            if (clampedTotalForce != totalForce) {
+                motorForce = clampedTotalForce - (brakingForce + gravityForce);
+                totalForce = clampedTotalForce;
+                accelerationClamped = true;
+            }
+        }
+        DogLog.log("Sim/Elevator/AccelerationClamped", accelerationClamped);
+        DogLog.log("Sim/Elevator/AccelerationLimit", maxAcceleration);
+        DogLog.log("Sim/Elevator/UnclampedAcceleration", unclampedAcceleration);
 
         state.setAcceleration(totalForce / carriageMass);
         state.setVelocity(state.getVelocity() + state.getAcceleration() * dt);
