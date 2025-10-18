@@ -24,7 +24,7 @@ public class ArmSim extends Arm {
     private final WristVisualizer visualizer = new WristVisualizer(true);
 
     public ArmSim() {
-        motor = new SimulatedDCMotor();
+        motor = new SimulatedDCMotor("Arm Motor");
         motor.setBrakeMode(true);
 
         TalonFXConfiguration config = new TalonFXConfiguration();

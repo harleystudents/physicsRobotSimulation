@@ -25,14 +25,16 @@ public class SimulatedDCMotor implements SimMotorController {
     private double position = 0.0;
     private final ProfiledPIDController pidController;
     private final ArmFeedforward armFeedforward;
+    private final String name;
     private boolean controlledThisCycle = false;
     double velocity = 0.0;
 
-    public SimulatedDCMotor() {
+    public SimulatedDCMotor(String name) {
         this.pidController = new ProfiledPIDController(
             0.0, 0.0, 0.0,
             new TrapezoidProfile.Constraints(0.0, 0.0));
         this.armFeedforward = new ArmFeedforward(0.0, 0.0, 0.0);
+        this.name = name;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class SimulatedDCMotor implements SimMotorController {
         controlledThisCycle = true;
         this.controlMode = ControlMode.VOLTAGE;
         this.commandedValue = voltage;
-        DogLog.log("Sim/SimulatedDCMotor/SetVoltage", voltage);
+        DogLog.log("Sim/" + name + "/SetVoltage", voltage);
     }
     @Override
     public double getPosition() {
@@ -114,9 +116,9 @@ public class SimulatedDCMotor implements SimMotorController {
         } else if (controlMode == ControlMode.POSITION) {
             controlledThisCycle = false;
             double voltage = this.pidController.calculate(this.position) + armFeedforward.calculate(this.position, this.velocity);
-            DogLog.log("Sim/SimulatedDCMotor/PositionError", this.pidController.getPositionError());
-            DogLog.log("Sim/SimulatedDCMotor/PositionSetpoint", this.pidController.getSetpoint().position);
-            DogLog.log("Sim/SimulatedDCMotor/PositionFeedforward", armFeedforward.calculate(this.position, this.velocity));
+            DogLog.log("Sim/" + name + "/PositionError", this.pidController.getPositionError());
+            DogLog.log("Sim/" + name + "/PositionSetpoint", this.pidController.getSetpoint().position);
+            DogLog.log("Sim/" + name + "/PositionFeedforward", armFeedforward.calculate(this.position, this.velocity));
             voltage = voltage > 12.0 ? 12.0: voltage < -12.0 ? -12.0 : voltage; // Clamp to +/- 12V
             return new ControllerOutput(voltage, 0.0, false);
         } else {

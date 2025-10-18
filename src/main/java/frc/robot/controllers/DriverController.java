@@ -23,7 +23,7 @@ public class DriverController {
     this.A.onTrue(WristCommands.goToPosition(wrist, 0));
     this.B.onTrue(WristCommands.goToPosition(wrist, Math.PI / 4));
     this.X.onTrue(WristCommands.goToPosition(wrist, Math.PI / 2));
-    this.Y.onTrue(WristCommands.runAtVoltage(wrist, .85));
+    this.Y.onTrue(WristCommands.runAtVoltage(wrist, .0));
 
     this.DPU.onTrue(ElevatorCommands.goToHeight(elevator, 1.2));
     this.DPD.onTrue(ElevatorCommands.goToHeight(elevator, 0.0));
